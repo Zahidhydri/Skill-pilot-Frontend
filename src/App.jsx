@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import './App.css'; // Make sure this line is here
 
 function App() {
-  const [subjects, setSubjects] = useState('')
-  const [interests, setInterests] = useState('')
-  const [recommendations, setRecommendations] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [subjects, setSubjects] = useState('');
+  const [interests, setInterests] = useState('');
+  const [recommendations, setRecommendations] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const API_ENDPOINT = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/generate`
+  const API_ENDPOINT = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/generate`;
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-    setRecommendations([])
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setRecommendations([]);
 
     try {
       const response = await fetch(API_ENDPOINT, {
@@ -23,25 +23,27 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ subjects, interests }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const data = await response.json()
-
+      const data = await response.json();
+      
       if (data && Array.isArray(data.recommendations)) {
-        setRecommendations(data.recommendations)
+        setRecommendations(data.recommendations);
       } else {
-        throw new Error('Received an invalid response from the server.')
+        throw new Error("Received an invalid response from the server.");
       }
+
     } catch (err) {
-      setError('Failed to fetch recommendations. Please try again later.')
+      console.error("An error occurred while fetching:", err);
+      setError('Failed to fetch recommendations. Please try again later.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="container">
@@ -49,26 +51,26 @@ function App() {
         <h1>Skill Pilot AI 🚀</h1>
         <p>Enter your details to get personalized career advice.</p>
       </div>
-
+      
       <form onSubmit={handleSubmit} className="profile-form">
         <div className="form-group">
           <label>Your Main Subjects</label>
-          <input
-            type="text"
-            value={subjects}
-            onChange={(e) => setSubjects(e.target.value)}
+          <input 
+            type="text" 
+            value={subjects} 
+            onChange={(e) => setSubjects(e.target.value)} 
             placeholder="e.g., Computer Science, Physics"
-            required
+            required 
           />
         </div>
         <div className="form-group">
           <label>Your Hobbies & Interests</label>
-          <input
-            type="text"
-            value={interests}
-            onChange={(e) => setInterests(e.target.value)}
+          <input 
+            type="text" 
+            value={interests} 
+            onChange={(e) => setInterests(e.target.value)} 
             placeholder="e.g., Gaming, Reading, Coding"
-            required
+            required 
           />
         </div>
         <button type="submit" disabled={loading}>
@@ -85,7 +87,7 @@ function App() {
             <p>Our AI is thinking...</p>
           </div>
         )}
-
+        
         {recommendations.length > 0 && (
           <div className="recommendations-list">
             <h2>Here are your recommendations:</h2>
@@ -95,9 +97,7 @@ function App() {
                 <p>{rec.description}</p>
                 <h4>Essential Skills:</h4>
                 <ul>
-                  {rec.skills.map((skill, i) => (
-                    <li key={i}>{skill}</li>
-                  ))}
+                  {rec.skills.map((skill, i) => <li key={i}>{skill}</li>)}
                 </ul>
               </div>
             ))}
@@ -105,13 +105,11 @@ function App() {
         )}
       </div>
 
-      {/* --- ADDED FOOTER --- */}
       <footer className="app-footer">
         <p>&copy; {new Date().getFullYear()} Zahid Hydri. All Rights Reserved.</p>
       </footer>
-      
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
